@@ -2,7 +2,7 @@
  Project: Dem san pham (V2.0)
  MCU: PIC16F883
  Clock: 20.0MHz External resonator
- Chinh sua lan cuoi 16/10/2017
+ Chinh sua lan cuoi 21/10/2017
 */
 #include <16F883.h>
 #FUSES NOWDT                     // khong su dung bo Watch Dog Timer
@@ -18,7 +18,7 @@
 //#use FAST_IO(C)                // Thiet lap che do fast I/O cho PORTC, yeu cau phai chi ro huong Vao/Ra 
 //#CASE                          // Phan biet chu hoa va chu thuong trong khi lap trinh code
 
-//#define USE_EXT_EEPROM           // Su dung EEPROM ngoai (external), comment de su dung EEPROM noi (internal)
+#define USE_EXT_EEPROM           // Su dung EEPROM ngoai (external), comment de su dung EEPROM noi (internal)
 
 #ifdef USE_EXT_EEPROM //24LC01 EEPROM
 //#define EEPROM_SDA  PIN_C4
@@ -39,11 +39,6 @@
 //Custom def
 //Minh thich thi minh define cho de nho thoi :))
 #define lcd_clear() lcd_putc("\f") 
-/*
-//LCD thuc te khong ho tro
-#define lcd_dich_phai() lcd_send_byte(0, SHIFT_DISP_RIGHT)  //Tham khao driver lcd_16x2
-#define lcd_dich_trai() lcd_send_byte(0, SHIFT_DISP_LEFT)
-*/
 //////////////////Main code o ben duoi nay nhe/////////////////
 //Global values
 int32 product = 0;   //Khoi tao bien luu so luong san pham
@@ -54,7 +49,13 @@ int first_run = 1; //Bien tam thoi de xac dinh khoi tao PWM
 void check_info()
 {
    lcd_gotoxy(1,1); //LCD: cot 1 dong 1
-   lcd_putc("Hello");
+   lcd_putc("Tran Van Lam");
+   delay_ms(500);
+   lcd_clear();
+   lcd_putc("Le Viet Hoang");
+   delay_ms(500);
+   lcd_clear();
+   lcd_putc("Hoang Van Huan");
    delay_ms(500);
    /*
    for(int i = 0; i<16; i++)
@@ -75,6 +76,7 @@ void check_info()
          lcd_clear();
          delay_ms(500);
       }
+      product = 0; //Reset product sau khi ngat RB0
       lcd_putc("Cam bien: OK!");
 /*
 #ifdef USE_EXT_EEPROM //24LC01 EEPROM
@@ -148,12 +150,13 @@ void main()
    lcd_putc("che do");
    while(TRUE) //Loop forever
    {  
+      //Doc nut bam chuc nang
       if(!input(PIN_A1)) 
       { 
          delay_ms(500);
          if(!input(PIN_A1))
          {
-            mode = 1;
+            mode = 1;//Start
             lcd_clear();
          }
       }
@@ -162,7 +165,7 @@ void main()
          delay_ms(500);
          if(!input(PIN_A2) && mode == 1) 
          {
-            mode = 2;
+            mode = 2;//Pause
             lcd_clear();
          }
       }
@@ -171,7 +174,7 @@ void main()
          delay_ms(500);
          if(!input(PIN_A3))
          {
-            mode = 3;
+            mode = 3;//Return
             lcd_clear();
          }
       }
